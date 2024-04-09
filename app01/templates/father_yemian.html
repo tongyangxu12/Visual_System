@@ -1,0 +1,28 @@
+{# 公共html模板， 用于 添加 或者 修改 页面， 文件上传除外#}
+
+{% extends 'father.html' %}
+{% block content %}
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title }}</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% for foo in form %}
+                        <div class="form-group>">
+                            <label>{{ foo.label }}</label>
+                            {{ foo }}
+                            <span style="color: red">{{ foo.errors.0 }}</span>
+                        </div>
+                    {% endfor %}
+
+                        <button type="submit" class="btn btn-success" style="margin-top: 15px">保 存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

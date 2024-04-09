@@ -1,0 +1,320 @@
+{% extends "father.html" %}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 14px">
+            <!--写一个按钮,一点击就能把对话框显示出来-->
+            <!--方法一：data-toggle、data-target-->
+{#            <input type="button" value="新建订单1" class="btn btn-success" data-toggle="modal" data-target="#myModal">#}
+            <!--方法二：js-->
+            <input id="btnAdd" type="button" value="新建商品" class="btn btn-success">
+        </div>
+
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                商品列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <!--管理员特有的重置密码列-->
+                    <th>商品编号</th>
+                    <th>所属用户</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for foo in queryset %}
+                    <tr>
+                        <td>{{ foo.id }}</td>
+                        <td>{{ foo.title }}</td>
+                        <td>{{ foo.oid }}</td>
+                        <td>{{ foo.admin.username }}</td>
+                        <td>
+{#                            <a class="btn btn-primary btn-xs" href="#">编辑</a>#}
+                            <input uid="{{ foo.id }}" class="btn btn-primary btn-xs btn-edit" type="button" value="编辑">
+                            {#                                    <a class="btn btn-primary btn-xs" href="#">删除</a>#}
+                            <!--用Ajax就没必要用a标签而是换成input;uid="{{ foo.id }}"的目的是方便在点击删除的时候获取这一行的id-->
+                            <input uid="{{ foo.id }}" class="btn btn-danger btn-xs btn-delete" type="button" value="删除">
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+        <ul class="pagination">
+            {{ page_string }}
+        </ul>
+
+    </div>
+
+    <!--这个模态框的div位置没讲究，无所谓的，因为它和普通的div没关系-->
+    <!--创建完对话框还要和上面创建的按钮关联起来，加入：data-toggle="modal" data-target="#myModal"-->
+    <!--除了关联之外还可以用js绑定事件-->
+    <!--新增/编辑订单(对话框)-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">新 建</h4>  <!--当是编辑的时候还要修改标题-->
+                </div>
+                <div class="modal-body">
+                    <form id="addForm" novalidate>
+                        <!--加上栅格系统-->
+                        <div class="clearfix">
+                            {% for foo in form %}
+                                <div class="col-xs-6">
+                                    <div class="form-group>" style="position: relative;margin-bottom: 30px">
+                                        <label>{{ foo.label }}</label>
+                                        {{ foo }}
+                                        <span class="error_msg" style="color: red;position: absolute;"></span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button id="btnSave" type="button" class="btn btn-primary">保 存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--删除订单(对话框)-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <h4>是否确定删除？</h4>
+                <p style="margin: 10px 0;">删除后，所有关联的相关数据都会被删除</p>
+                <p style="text-align: right">  <!--放到右边-->
+                    <button id="btnConfirmDelete" type="button" class="btn btn-danger">确 定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        var DELETE_ID
+        var EDIT_ID
+        $(function () {
+            bindBtnAddEvent();
+            bindBtnSaveEvent();
+            bindBtnDeleteEvent();
+            bindBtnConfirmDeleteEvent();
+            bindBtnEditEvent();
+        })
+        // 用来显示对话框的
+        function bindBtnAddEvent() {
+            $("#btnAdd").click(function () {
+                // 将正在编辑的ID(EDIT_ID)置空
+                EDIT_ID = 0;
+                // 清空对话框中的数据
+                $('#addForm')[0].reset();
+                // 设置对话框的标题
+                $('#myModalLabel').text('新 建');
+                // 上面三个都是因为和编辑公用一个对话框而要加的东西
+                // 点击新建按钮，显示对话框
+                $('#myModal').modal('show')
+            })
+        }
+
+        // 真正用来保存的
+        function bindBtnSaveEvent() {
+            $("#btnSave").click(function () {
+                // 先清除错误信息
+                $(".error_msg").empty();
+
+                // 判断全局变量EDIT_ID的值,
+                if(EDIT_ID){
+                    // 编辑
+                    doEdit()
+                } else {
+                    // 添加,把发送添加的Ajax请求封装到函数doAdd()里面了
+                    doAdd();
+                }
+                $('#myModal').modal('show')
+            })
+        }
+
+        function doAdd() {
+            $.ajax({
+                    url: "/order/add/",
+                    type: "post",
+                    data: $("#addForm").serialize(),
+                    dataType: "JSON",
+                    success: function (res) {
+
+                        $("")
+                        // console.log(res);
+                        if (res.status) {
+                            alert("创建成功")
+                            // 创建成功后还要清空表单 $("#addForm")是jQuery对象,加上[0]就是DOM对象 jQuery没有置空功能但是DOM有
+                            $("#addForm")[0].reset();
+                            // 清空表单后还要关闭对话框
+                            $('#myModal').modal('hide');
+
+                            // 刷新页面
+                            location.reload()
+                        } else {
+                            // 把错误信息显示在对话框中
+                            $.each(res.error, function (name, errorList) {
+                                $("#id_" + name).next().text(errorList[0]);
+                            })
+                        }
+                    }
+                })
+        }
+
+        function doEdit() {
+            $.ajax({
+                    url: "/order/edit/" + "?uid=" + EDIT_ID,  //  -> /order/edit/?uid=12
+                    type: "post",
+                    data: $("#addForm").serialize(),
+                    dataType: "JSON",
+                    success: function (res) {
+
+                        $("")
+                        // console.log(res);
+                        if (res.status) {
+                            // 创建成功后还要清空表单 $("#addForm")是jQuery对象,加上[0]就是DOM对象 jQuery没有置空功能但是DOM有
+                            $("#addForm")[0].reset();
+                            // 清空表单后还要关闭对话框
+                            $('#myModal').modal('hide');
+
+                            // 刷新页面
+                            location.reload()
+                            } else {
+                            if (res.msg) {
+                                alert(res.msg);
+                            } else {
+                                // 把错误信息显示在对话框中
+                                $.each(res.error, function (name, errorList) {
+                                    $("#id_" + name).next().text(errorList[0]);
+                                })
+                            }
+                        }
+                    }
+                })
+        }
+
+        // 用来显示对话框的
+
+        function bindBtnDeleteEvent() {
+            // 如果是样式绑定用“.”
+            $(".btn-delete").click(function () {
+                $('#deleteModal').modal('show');
+
+                // 获取当前行的ID并赋值给全局变量,就是点击删除的时候就获得ID,如果不操作就无所谓,确认删除就向后端传id
+                DELETE_ID =$(this).attr("uid");  // $(this)  代表的是当前你点击的是那个标签。
+                {#console.log(uid)#}
+            })
+        }
+        // 真正用来删除的
+
+        function bindBtnConfirmDeleteEvent() {
+            // 如果是样式绑定用“.”
+            $(".btnConfirmDelete").click(function () {
+                // 点击确认删除按钮后需要将全局变量发送到后台,利用Ajax发送
+                $.ajax({
+                    //url: "/order/" + DELETE_ID + "/delete/",  // 利用字符串拼接
+                    url: "/order/" + DELETE_ID + "/delete/",  // /order/delete/?uid=123
+                    type: "GET",
+                    data:{  // 或者是利用data
+                      uid: DELETE_ID
+                    },
+                    dataType: "JSON",
+                    success: function (res){
+                        if(res.status){
+                            // alert("删除成功")
+
+                            // 隐藏对话框
+                            $('#deleteModal').modal('hide');
+
+                            // 在页面上将当前一行数据删除(利用js)
+                            $("tr[uid='" + DELETE_ID + "']").remove();  // 里面有一个拼接过程
+
+                            // 将全局变量清空
+                            DELETE_ID = 0;
+
+                            // 除了js外，还可以直接页面刷新
+                            // location.reload();
+
+                        }else {
+                            // 删除失败
+                            alert(res.error);
+                        }
+                    }
+                })
+            })
+        }
+
+        // 用来显示对话框并将原本的数据显示给用户(编辑保存写在了bindBtnSaveEvent里面)
+        // 前端页面通过EDIT_ID是否有值来判断点击的是编辑-保存还是新建-保存
+        function bindBtnEditEvent() {
+
+            // var uid_this = $(this).attr("uid");
+            // EDIT_ID = $(this).attr("uid")  // $(this)表示当前点击的标签
+
+            // 如果是样式绑定用“.”
+            $(".btn-edit").click(function () {
+
+                EDIT_ID = $(this).attr("uid")  // $(this)表示当前点击的标签
+                // 清空对话框中的数据
+                $('#addForm')[0].reset();
+
+                // 让对话框的标题变成编辑
+                $('#myModalLabel').text('编 辑');
+
+
+                // 点击编辑,显示对话框   !!要放到success里面,先判断存在然后显示
+                // $('#myModal').modal('show');
+
+                // 发送Ajax去后端获取当前行的相关数据  /order/detail/?uid=123
+                $.ajax({
+                    url: "/order/detail/",
+                    type: "get",
+                    data: {
+                        uid: $(this).attr("uid")
+                    },
+                    dataType: "JSON",
+                    success: function (res){
+                        if(res.status){
+                            // 将数据赋值到对话框中的标签中,通过标签的id
+                            $.each(res.data, function (name,value){
+                                $("#id_" + name).val(value);  // .val()就是给input赋值
+                            })
+
+                            // 数据存在,判断成功,显示数据库
+                            $('#myModal').modal('show');
+                            // res里面已经有后端传过来的数据了
+                            console.log(res)
+                            console.log(EDIT_ID)
+                        }else {
+                            alert(res.error);
+                        }
+                    }
+                })
+            })
+        }
+
+
+    </script>
+{% endblock %}

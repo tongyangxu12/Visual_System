@@ -1,0 +1,59 @@
+{% extends 'father.html' %}
+
+{#{% block title %}#}
+{#    数据表列表#}
+{#{% endblock title %}#}
+
+{% block content %}
+    <div class="container">
+        {#新建按钮#}
+        <div style="margin-bottom: 10px">
+            <a class="btn btn-success" href="/city/add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                上传数据
+            </a>
+        </div>
+
+        {#面板#}
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                数据列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>数据表</th>
+                    <th>数据分析</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td>{{ obj.name }}</td>
+                        <td>
+                            <a href="/media/{{ obj.data }}" style="height: 80px">data</a>
+                        </td>
+                        <td>
+                            <a href="/analysis/{{ obj.id }}/sentiment" class="btn btn-primary btn-xs">情感分析</a>
+                            <a href="/analysis/{{ obj.id }}/cluster" class="btn btn-primary btn-xs">聚类分析</a>
+                            <a href="/analysis/{{ obj.id }}/lda" class="btn btn-primary btn-xs">LDA主题</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# 分页 #}
+        <ul class='pagination'>
+            {{ page_string }}
+        </ul>
+    </div>
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends 'father.html' %}
+
+{% block title %}
+    用户列表
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        {#面板#}
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                我的信息
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>用户名</th>
+                    <th>密码</th>
+                    <th>重置密码</th>
+                    <th>头像</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td>{{ obj.username }}</td>
+                        <td>******</td>
+                        <td><a href="/user/{{ obj.id }}/reset/">重置密码</a></td>
+                        <td>
+                            <img src="/media/{{ obj.img }}" style="height: 45px;width: 45px">
+                        </td>
+                        <td>
+                            <a href="/avatar/edit/" class="btn btn-primary btn-xs">更换头像</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# 分页 #}
+        <ul class='pagination'>
+            {{ page_string }}
+        </ul>
+
+    </div>
+{% endblock content %}

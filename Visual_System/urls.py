@@ -15,10 +15,49 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from app01 import views
+from django.urls import path, re_path
+from django.views.static import serve
+from django.conf import settings
+from app01.views import user, account, order, data, analysis, avatar
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
-    path("LDA/", views.lda_visual)
+
+    # 默认访问用户列表页面
+    path('', user.user_list),
+
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}, name='media'),
+
+    # 用户管理
+    path("user/list/", user.user_list),
+    path('user/<int:nid>/reset/', user.user_reset),
+
+    # 头像
+    path('avatar/edit/', avatar.avatar_edit),
+
+    # 登录功能实现
+    path("login/", account.login),
+    # 注销,即退出登录功能
+    path("logout/", account.logout),
+    # 登录的时候添加图片验证
+    path("image/code/", account.image_code),
+    # 注册
+    path('register/', account.register),
+
+    # 商品管理
+    path('order/list/', order.order_list),
+    path('order/add/', order.order_add),
+    path('order/delete/', order.order_delete),
+    path('order/detail/', order.order_detail),
+    path('order/edit/', order.order_edit),
+
+    # csv数据列表
+    path('data/list/', data.data_list),
+    path('data/add/', data.data_add),
+
+    # 分析
+    path('analysis/<int:nid>/sentiment/', analysis.analysis_sentiment),
+    path('analysis/<int:nid>/cluster/', analysis.analysis_cluster),
+    path('analysis/<int:nid>/lda', analysis.analysis_lda),
+
 ]
