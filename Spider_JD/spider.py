@@ -51,3 +51,4 @@ if __name__ == '__main__':
             except:
                 break
     print(f'爬虫已完成！爬取到的内容请在comments目录下的 JD_comment_{product_id}.csv 查看！')
+    print("hello")
