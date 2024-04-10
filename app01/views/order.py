@@ -7,22 +7,37 @@ import random
 from datetime import datetime
 from app01.utils.pagination import Pagination
 from app01.utils.form import OrderModelForm
+from app01.utils.search import Search
 
 
 def order_list(request):
-    queryset = models.Order.objects.all().order_by('-id')
+    """ 商品列表 """
+
+    search_obj = Search(request, "oid", models.Order)
+
+    search_data = search_obj.search_data
+    queryset = search_obj.search()
+
+    # queryset = models.Order.objects.all().order_by('id')
     page_object = Pagination(request, queryset)
-    form = OrderModelForm
+
+    img_path = models.UserInfo.objects.filter(id=request.session['info'].get("id")).values("img").first()
+    img_path = img_path.get("img")
+
+    form = OrderModelForm()
 
     context = {
         'form': form,
         "queryset": page_object.page_queryset,  # 分完页的数据
-        "page_string": page_object.html()  # 生成页码
+        "page_string": page_object.html(),  # 生成页码
+        "img_path": img_path,
+        "search_data": search_data
     }
 
     return render(request, 'order_list.html', context)
 
 
+@csrf_exempt
 def order_add(request):
     """新建订单 （Ajax请求）"""
     form = OrderModelForm(data=request.POST)
@@ -40,10 +55,12 @@ def order_add(request):
     return JsonResponse({"status": False, "error": form.errors})
 
 
+
 def order_delete(request):
     """删除订单"""
     uid = request.GET.get('uid')
-
+    print(request.GET)
+    print(uid)
     exists = models.Order.objects.filter(id=uid).exists()
     if not exists:
         return JsonResponse({'status': False, 'error': '删除失败，数据不存在'})

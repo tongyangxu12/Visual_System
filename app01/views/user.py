@@ -4,10 +4,10 @@ from app01.utils.form import UserResetModelForm
 
 
 def user_list(request):
-    queryset = models.UserInfo.objects.all()
+    obj = models.UserInfo.objects.filter(id = request.session['info'].get("id")).first()
     img_path = models.UserInfo.objects.filter(id = request.session['info'].get("id")).values("img").first()
     img_path = img_path.get("img")
-    return render(request, "user_list.html", {"queryset": queryset, "img_path": img_path})
+    return render(request, "user_list.html", {"obj": obj, "img_path": img_path})
 
 
 def user_reset(request, nid):
