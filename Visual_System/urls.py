@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.static import serve
 from django.conf import settings
-from app01.views import user, account, order, data, analysis, avatar
+from app01.views import user, account, order, analysis, avatar, sentiment_list
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
@@ -51,13 +51,17 @@ urlpatterns = [
     path('order/detail/', order.order_detail),
     path('order/edit/', order.order_edit),
 
-    # csv数据列表
-    path('data/list/', data.data_list),
-    path('data/add/', data.data_add),
-
     # 分析
     path('analysis/<int:nid>/sentiment/', analysis.analysis_sentiment),
     path('analysis/<int:nid>/cluster/', analysis.analysis_cluster),
     path('analysis/<int:nid>/lda', analysis.analysis_lda),
+
+    # 情感分析
+    path("sentiment/list/", sentiment_list.sentiment_list),  # sentiment_list同时包含了展示和添加两个功能
+    path('sentiment/<int:nid>/delete/', sentiment_list.sentiment_delete),
+    path('sentiment/<int:nid>/analysis/', sentiment_list.sentiment_analysis),
+    path("sentiment/chart/one/", sentiment_list.chart_one),
+    path("sentiment/chart/two/", sentiment_list.chart_two),
+    path("sentiment/chart/three/", sentiment_list.chart_three),
 
 ]

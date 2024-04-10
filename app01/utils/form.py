@@ -99,14 +99,6 @@ class OrderModelForm(BootStrapModelForm):
         exclude = ["admin"]
 
 
-class DataModelForm(BootStrapModelForm):
-    """城市ModelForm"""
-    bootstrap_exclude_fields = ['data']
-
-    class Meta:
-        model = models.DataCsv
-        fields = '__all__'
-
 
 class UpModelForm(BootStrapModelForm):
     bootstrap_exclude_fields = ['img']
@@ -114,3 +106,13 @@ class UpModelForm(BootStrapModelForm):
     class Meta:
         model = models.UserInfo
         fields = ["img"]
+
+
+class SentimentModelForm(BootStrapModelForm):
+    bootstrap_exclude_fields = ['data']
+    class Meta:
+        model = models.CsvData
+        fields = '__all__'
+        widgets = {
+            'detail': forms.TextInput
+        }

@@ -7,6 +7,9 @@ class UserInfo(models.Model):
     password = models.CharField(verbose_name='密码', max_length=64)
     img = models.FileField(verbose_name='Logo', max_length=128, upload_to='avatar/', default="/avatar/init.jpg")
 
+    def __str__(self):
+        return self.username
+
 
 class Order(models.Model):
     """商品信息表"""
@@ -16,8 +19,10 @@ class Order(models.Model):
     admin = models.ForeignKey(verbose_name="所属用户", to="UserInfo", on_delete=models.CASCADE)
 
 
-class DataCsv(models.Model):
+class CsvData(models.Model):
     """ csv数据表 """
-    name = models.CharField(verbose_name='数据表格名称', max_length=32)
+    title = models.CharField(verbose_name='数据表格名称', max_length=32)
+    detail = models.TextField(verbose_name='详细信息')
+    admin = models.ForeignKey(verbose_name="所属用户", to="UserInfo", on_delete=models.CASCADE)
 
     data = models.FileField(verbose_name="上传的数据", max_length=128, upload_to='data/')
