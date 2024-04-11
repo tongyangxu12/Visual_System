@@ -1,0 +1,123 @@
+{% extends 'father.html ' %}
+{% load static %}
+{% block css %}
+    <!--让画出来的图像居中-->
+    <style>
+        .main_cen {
+            margin: 0 auto;
+            display: table;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div style="text-align: center; color: #4c4c4c">确定最佳主题个数K值</div>
+                </div>
+                <div class="panel-body">
+                    <div id="m1" style="width: 600px;height: 450px" class="main_cen"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">观察左图，请输入最合适的主题个数</div>
+                <div class="panel-body">
+                    <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>主题个数</label>
+                        <input type="text" class="form-control" placeholder="请输入主题个数" name="title">
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">提 交</button>
+                        <a href="/lda/list/" class="btn btn-danger" style="text-align: center">退 出</a>
+                    </div>
+                </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+    <script src="{% static 'js/echarts-wordcloud-2.1.0/dist/echarts-wordcloud.js' %}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            initLine();
+        })
+
+        /*
+                初始化折线图
+            */
+        function initLine() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m1'));
+
+            var option = {
+                title: {
+                    text: '主题个数变化图',
+                    left: 'center',
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: [],
+                    bottom: 0,
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    name: 'number of topics',
+                    nameLocation: 'middle',
+                    position: 'bottom',
+                    type: 'category',
+                    boundaryGap: false,
+                    nameGap: 30,
+                    data: [],
+
+                },
+                yAxis: {
+                    name: 'coherence score',
+                    nameLocation: 'middle',
+                    nameGap: 40,
+                    type: 'value',
+                    min: '-1.40', //刻度最小值
+                    max: '-0.70', //刻度最大值
+                },
+                series: []
+            };
+
+            $.ajax({
+                url: "/lda/chart/one/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    if (res.status) {
+                        option.legend.data = res.data.legend;
+                        option.xAxis.data = res.data.x_axis;
+                        option.series = res.data.series_list;
+
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    }
+                }
+            })
+
+
+        }
+    </script>
+{% endblock %}

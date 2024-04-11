@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.static import serve
 from django.conf import settings
-from app01.views import user, account, order, analysis, avatar, sentiment_list, cluster_list
+from app01.views import user, account, order, analysis, avatar, sentiment_list, cluster_list, lda_list
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
@@ -73,5 +73,12 @@ urlpatterns = [
     path("cluster/chart/two/", cluster_list.chart_two),
     path("cluster/chart/three/", cluster_list.chart_three),
     path("cluster/chart/four/", cluster_list.chart_four),
+
+    # LDA分析
+    path("lda/list/", lda_list.lda_list),
+    path('lda/<int:nid>/delete/', lda_list.lda_delete),
+    path('lda/<int:nid>/analysis/', lda_list.lda_analysis),
+    path("lda/chart/one/", lda_list.chart_one),
+
 
 ]

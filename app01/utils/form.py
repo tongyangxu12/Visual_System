@@ -116,3 +116,6 @@ class AnalysisModelForm(BootStrapModelForm):
         widgets = {
             'detail': forms.TextInput
         }
+
+
+
