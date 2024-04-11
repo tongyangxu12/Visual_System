@@ -1,0 +1,439 @@
+{% extends 'father.html ' %}
+{% load static %}
+{% block css %}
+    <!--让画出来的图像居中-->
+    <style>
+        .main_cen {
+            margin: 0 auto;
+            display: table;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+
+                <div class="panel-heading">分成2类的聚类结果图</div>
+                <div class="panel-body">
+                    <div id="m1" class="main_cen" style="width: 100%;height: 268px;"></div>
+                </div>
+
+                <div class="panel-heading">分成3类的聚类结果图</div>
+                <div class="panel-body">
+                    <div id="m2" class="main_cen" style="width: 100%;height: 248px"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">分成4类的聚类结果图</div>
+                    <div class="panel-body">
+                        <div id="m3" class="main_cen" style="width: 100%;height: 268px;"></div>
+                    </div>
+
+                    <div class="panel-heading">分成5类的聚类结果图</div>
+                    <div class="panel-body">
+                        <div id="m4" class="main_cen" style="width: 100%;height: 248px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+    <script src="{% static 'js/echarts-wordcloud-2.1.0/dist/echarts-wordcloud.js' %}"></script>
+    <script src="{% static 'js/echarts-stat-master/dist/ecStat.js' %}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            initOne();
+            initTwo();
+            initThree();
+            initFour();
+
+        })
+
+        /*
+            初始化n=2
+        */
+        function initOne() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m1'));
+
+            echarts.registerTransform(ecStat.transform.clustering);
+
+
+            var CLUSTER_COUNT = 2;
+            var DIENSIION_CLUSTER_INDEX = 2;
+            var COLOR_ALL = [
+                '#37A2DA',
+                '#e06343',
+                '#37a354',
+                '#b55dba',
+                '#b5bd48',
+                '#8378EA',
+                '#96BFFF'
+            ];
+            var pieces = [];
+            for (var i = 0; i < CLUSTER_COUNT; i++) {
+                pieces.push({
+                    value: i,
+                    label: 'cluster ' + i,
+                    color: COLOR_ALL[i]
+                });
+            }
+            var option = {
+                dataset: [
+                    {
+                        source: []
+                    },
+                    {
+                        transform: {
+                            type: 'ecStat:clustering',
+                            // print: true,
+                            config: {
+                                clusterCount: CLUSTER_COUNT,
+                                outputType: 'single',
+                                outputClusterIndexDimension: DIENSIION_CLUSTER_INDEX
+                            }
+                        }
+                    }
+                ],
+                tooltip: {
+                    position: 'top'
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    top: 'middle',
+                    min: 0,
+                    max: CLUSTER_COUNT,
+                    left: 10,
+                    splitNumber: CLUSTER_COUNT,
+                    dimension: DIENSIION_CLUSTER_INDEX,
+                    pieces: pieces
+                },
+                grid: {
+                    left: 120
+                },
+                xAxis: {},
+                yAxis: {},
+                series: {
+                    type: 'scatter',
+                    encode: {tooltip: [0, 1]},
+                    symbolSize: 4,
+                    itemStyle: {
+                        borderColor: '#555'
+                    },
+                    datasetIndex: 1
+                }
+            };
+
+
+            $.ajax({
+                url: "/cluster/chart/one/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中
+                    if (res.status) {
+                        // 使用刚指定的配置项和数据显示图表。
+                        console.log("test1")
+                        option.dataset[0].source = res.data
+                        myChart.setOption(option);
+                    }
+
+                }
+            })
+
+        }
+
+        /*
+            初始化n=3
+        */
+        function initTwo() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m2'));
+
+            echarts.registerTransform(ecStat.transform.clustering);
+
+
+            var CLUSTER_COUNT = 3;
+            var DIENSIION_CLUSTER_INDEX = 2;
+            var COLOR_ALL = [
+                '#37A2DA',
+                '#e06343',
+                '#37a354',
+                '#b55dba',
+                '#b5bd48',
+                '#8378EA',
+                '#96BFFF'
+            ];
+            var pieces = [];
+            for (var i = 0; i < CLUSTER_COUNT; i++) {
+                pieces.push({
+                    value: i,
+                    label: 'cluster ' + i,
+                    color: COLOR_ALL[i]
+                });
+            }
+            var option = {
+                dataset: [
+                    {
+                        source: []
+                    },
+                    {
+                        transform: {
+                            type: 'ecStat:clustering',
+                            // print: true,
+                            config: {
+                                clusterCount: CLUSTER_COUNT,
+                                outputType: 'single',
+                                outputClusterIndexDimension: DIENSIION_CLUSTER_INDEX
+                            }
+                        }
+                    }
+                ],
+                tooltip: {
+                    position: 'top'
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    top: 'middle',
+                    min: 0,
+                    max: CLUSTER_COUNT,
+                    left: 10,
+                    splitNumber: CLUSTER_COUNT,
+                    dimension: DIENSIION_CLUSTER_INDEX,
+                    pieces: pieces
+                },
+                grid: {
+                    left: 120
+                },
+                xAxis: {},
+                yAxis: {},
+                series: {
+                    type: 'scatter',
+                    encode: {tooltip: [0, 1]},
+                    symbolSize: 4,
+                    itemStyle: {
+                        borderColor: '#555'
+                    },
+                    datasetIndex: 1
+                }
+            };
+
+
+            $.ajax({
+                url: "/cluster/chart/two/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中
+                    if (res.status) {
+                        // 使用刚指定的配置项和数据显示图表。
+                        console.log("test2")
+                        option.dataset[0].source = res.data
+                        myChart.setOption(option);
+                    }
+
+                }
+            })
+
+        }
+
+        /*
+            初始化n=4
+        */
+        function initThree() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m3'));
+
+            echarts.registerTransform(ecStat.transform.clustering);
+
+
+            var CLUSTER_COUNT = 4;
+            var DIENSIION_CLUSTER_INDEX = 2;
+            var COLOR_ALL = [
+                '#37A2DA',
+                '#e06343',
+                '#37a354',
+                '#b55dba',
+                '#b5bd48',
+                '#8378EA',
+                '#96BFFF'
+            ];
+            var pieces = [];
+            for (var i = 0; i < CLUSTER_COUNT; i++) {
+                pieces.push({
+                    value: i,
+                    label: 'cluster ' + i,
+                    color: COLOR_ALL[i]
+                });
+            }
+            var option = {
+                dataset: [
+                    {
+                        source: []
+                    },
+                    {
+                        transform: {
+                            type: 'ecStat:clustering',
+                            // print: true,
+                            config: {
+                                clusterCount: CLUSTER_COUNT,
+                                outputType: 'single',
+                                outputClusterIndexDimension: DIENSIION_CLUSTER_INDEX
+                            }
+                        }
+                    }
+                ],
+                tooltip: {
+                    position: 'top'
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    top: 'middle',
+                    min: 0,
+                    max: CLUSTER_COUNT,
+                    left: 10,
+                    splitNumber: CLUSTER_COUNT,
+                    dimension: DIENSIION_CLUSTER_INDEX,
+                    pieces: pieces
+                },
+                grid: {
+                    left: 120
+                },
+                xAxis: {},
+                yAxis: {},
+                series: {
+                    type: 'scatter',
+                    encode: {tooltip: [0, 1]},
+                    symbolSize: 4,
+                    itemStyle: {
+                        borderColor: '#555'
+                    },
+                    datasetIndex: 1
+                }
+            };
+
+
+            $.ajax({
+                url: "/cluster/chart/three/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中
+                    if (res.status) {
+                        // 使用刚指定的配置项和数据显示图表。
+                        console.log("test3")
+                        option.dataset[0].source = res.data
+                        myChart.setOption(option);
+                    }
+
+                }
+            })
+
+        }
+
+        /*
+            初始化n=5
+        */
+        function initFour() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m4'));
+
+            echarts.registerTransform(ecStat.transform.clustering);
+
+
+            var CLUSTER_COUNT = 5;
+            var DIENSIION_CLUSTER_INDEX = 2;
+            var COLOR_ALL = [
+                '#37A2DA',
+                '#e06343',
+                '#37a354',
+                '#b55dba',
+                '#b5bd48',
+                '#8378EA',
+                '#96BFFF'
+            ];
+            var pieces = [];
+            for (var i = 0; i < CLUSTER_COUNT; i++) {
+                pieces.push({
+                    value: i,
+                    label: 'cluster ' + i,
+                    color: COLOR_ALL[i]
+                });
+            }
+            var option = {
+                dataset: [
+                    {
+                        source: []
+                    },
+                    {
+                        transform: {
+                            type: 'ecStat:clustering',
+                            // print: true,
+                            config: {
+                                clusterCount: CLUSTER_COUNT,
+                                outputType: 'single',
+                                outputClusterIndexDimension: DIENSIION_CLUSTER_INDEX
+                            }
+                        }
+                    }
+                ],
+                tooltip: {
+                    position: 'top'
+                },
+                visualMap: {
+                    type: 'piecewise',
+                    top: 'middle',
+                    min: 0,
+                    max: CLUSTER_COUNT,
+                    left: 10,
+                    splitNumber: CLUSTER_COUNT,
+                    dimension: DIENSIION_CLUSTER_INDEX,
+                    pieces: pieces
+                },
+                grid: {
+                    left: 120
+                },
+                xAxis: {},
+                yAxis: {},
+                series: {
+                    type: 'scatter',
+                    encode: {tooltip: [0, 1]},
+                    symbolSize: 4,
+                    itemStyle: {
+                        borderColor: '#555'
+                    },
+                    datasetIndex: 1
+                }
+            };
+
+
+            $.ajax({
+                url: "/cluster/chart/four/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中
+                    if (res.status) {
+                        // 使用刚指定的配置项和数据显示图表。
+                        console.log("test4")
+                        option.dataset[0].source = res.data
+                        myChart.setOption(option);
+                    }
+
+                }
+            })
+
+        }
+    </script>
+{% endblock js %}

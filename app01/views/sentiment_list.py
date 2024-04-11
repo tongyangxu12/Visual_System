@@ -11,7 +11,6 @@ from Sentiment_Analysis.sentiment_analysis import analysis
 
 
 BASE_DIR = os.getcwd()  # 获取当前文件路径 E:\Visual_System
-STOP_WORD = os.path.join(BASE_DIR, "app01\\views")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 RESULT = ()
 def sentiment_list(request):

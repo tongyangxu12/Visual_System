@@ -1,3 +1,4 @@
+import os
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
@@ -5,6 +6,12 @@ from django.http import HttpResponse, JsonResponse
 from app01 import models
 from app01.utils.pagination import Pagination
 from app01.utils.form import AnalysisModelForm
+from Cluster_Analysis.cluster_analysis import analysis
+
+BASE_DIR = os.getcwd()  # 获取当前文件路径 E:\Visual_System
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+CSV_PATH = ""
+
 
 def cluster_list(request):
     img_path = models.UserInfo.objects.filter(id=request.session['info'].get("id")).values("img").first()
@@ -54,14 +61,56 @@ def cluster_analysis(request, nid):
 
     if request.method == "GET":
         data_path = models.CsvData.objects.filter(id=nid).values("data").first().get("data")
-        # global MEDIA_ROOT
-        # global BASE_DIR
-        # global RESULT
-        # data_path = os.path.join(MEDIA_ROOT, data_path)
-        #
+        global MEDIA_ROOT
+        global CSV_PATH
+        CSV_PATH = os.path.join(MEDIA_ROOT, data_path)
+
         # RESULT = analysis(data_path)
         # print(type(RESULT[1]))
         # print(type(RESULT))
 
 
-        return render(request, "sentiment_analysis.html", {"img_path": img_path})
+        return render(request, "cluster_analysis.html", {"img_path": img_path})
+
+
+
+def chart_one(request):
+
+    data = analysis(CSV_PATH, 2)
+    result = {
+        "status": True,
+        "data": data
+
+    }
+    return JsonResponse(result)
+
+
+
+def chart_two(request):
+    data = analysis(CSV_PATH, 3)
+    result = {
+        "status": True,
+        "data": data
+
+    }
+    return JsonResponse(result)
+
+
+def chart_three(request):
+    data = analysis(CSV_PATH, 4)
+    result = {
+        "status": True,
+        "data": data
+
+    }
+    return JsonResponse(result)
+
+
+def chart_four(request):
+    data = analysis(CSV_PATH, 5)
+    result = {
+        "status": True,
+        "data": data
+
+    }
+    return JsonResponse(result)

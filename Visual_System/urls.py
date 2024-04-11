@@ -69,5 +69,9 @@ urlpatterns = [
     path("cluster/list/", cluster_list.cluster_list),  # sentiment_list同时包含了展示和添加两个功能
     path('cluster/<int:nid>/delete/', cluster_list.cluster_delete),
     path('cluster/<int:nid>/analysis/', cluster_list.cluster_analysis),
+    path("cluster/chart/one/", cluster_list.chart_one),
+    path("cluster/chart/two/", cluster_list.chart_two),
+    path("cluster/chart/three/", cluster_list.chart_three),
+    path("cluster/chart/four/", cluster_list.chart_four),
 
 ]
