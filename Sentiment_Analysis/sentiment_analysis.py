@@ -16,8 +16,6 @@ plt.rcParams['axes.unicode_minus'] = False # 用来正常显示负号
 
 def analysis(csv_data):
 
-    print(csv_data)
-
     # 读取数据集中的数据
     data = pd.read_csv(csv_data)
 
@@ -64,7 +62,14 @@ def analysis(csv_data):
     result2 = draw_WorldCloud(data[data["评论类别"] == "中性"]["评论内容"], "中性情绪")
     result3 = draw_WorldCloud(data[data["评论类别"] == "消极"]["评论内容"], "消极情绪")
 
-    return y, values, rate, result1, result2, result3
+    keyword_list = []
+    for key, value in result1[3].items():
+        item_dict = {"name": key, "value": value}
+        keyword_list.append(item_dict)
+
+
+    return y, values, rate, result1, keyword_list
+
 
 
 def draw_WorldCloud(df, pic_name, color="black"):
@@ -76,7 +81,8 @@ def draw_WorldCloud(df, pic_name, color="black"):
     # 文本分词
     seg_list_exact = jieba.cut(new_data, cut_all=True)
     result_list = []
-    with open("E:\Visual_System\Sentiment_Analysis\停用词库.txt", encoding="utf-8") as f:  # 可根据需要打开停用词阵，然后加上不想显示的词语
+
+    with open("E:\\Visual_System\\Sentiment_Analysis\\停用词库.txt", encoding="utf-8") as f:  # 可根据需要打开停用词阵，然后加上不想显示的词语
         con = f.readlines()
         stop_words = set()
         for i in con:
@@ -88,20 +94,37 @@ def draw_WorldCloud(df, pic_name, color="black"):
             result_list.append(word)
     word_counts = collections.Counter(result_list)
 
+    word_counts_dict = dict(word_counts)
+
     # 词频统计：获取前100最高频的词
     word_counts_top = word_counts.most_common(100)
-    with open(f"{pic_name}词频统计.txt", "w", encoding="utf-8") as f:
-        for i in word_counts_top:
-            f.write(str(i[0]))
-            f.write("\t")
-            f.write(str(i[1]))
-            f.write("\n")
+    # with open(f"{pic_name}词频统计.txt", "w", encoding="utf-8") as f:
+    #     for i in word_counts_top:
+    #         f.write(str(i[0]))
+    #         f.write("\t")
+    #         f.write(str(i[1]))
+    #         f.write("\n")
     # print(word_counts_top)
     x = [item[0] for item in word_counts_top[:10]]
     y = [item[1] for item in word_counts_top[:10]]
     title = f"{pic_name}Top10高频词"
 
-    return x, y, title
+    # print(type(word_counts_dict))
+    # print(word_counts_dict)
+    # return word_counts_dict
+
+    return x, y, title, word_counts_dict
 
 if __name__ == '__main__':
+    # word_counts_dict =
     analysis("JD_comment.csv")
+    # print(type(word_counts_dict))
+    # print(word_counts_dict)
+    #
+    # keyword_list = []
+    # for key, value in word_counts_dict.items():
+    #     item_dict = {"name": key, "value": value}
+    #     keyword_list.append(item_dict)
+    #
+    # print(type(keyword_list))
+    # print(keyword_list)

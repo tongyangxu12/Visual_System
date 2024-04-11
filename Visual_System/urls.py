@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.static import serve
 from django.conf import settings
-from app01.views import user, account, order, analysis, avatar, sentiment_list
+from app01.views import user, account, order, analysis, avatar, sentiment_list, cluster_list
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
@@ -63,5 +63,11 @@ urlpatterns = [
     path("sentiment/chart/one/", sentiment_list.chart_one),
     path("sentiment/chart/two/", sentiment_list.chart_two),
     path("sentiment/chart/three/", sentiment_list.chart_three),
+    path("sentiment/chart/four/", sentiment_list.chart_four),
+
+    # 聚类分析
+    path("cluster/list/", cluster_list.cluster_list),  # sentiment_list同时包含了展示和添加两个功能
+    path('cluster/<int:nid>/delete/', cluster_list.cluster_delete),
+    path('cluster/<int:nid>/analysis/', cluster_list.cluster_analysis),
 
 ]

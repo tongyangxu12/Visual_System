@@ -5,12 +5,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from app01 import models
-from app01.utils.form import SentimentModelForm
+from app01.utils.form import AnalysisModelForm
 from app01.utils.pagination import Pagination
 from Sentiment_Analysis.sentiment_analysis import analysis
 
 
 BASE_DIR = os.getcwd()  # 获取当前文件路径 E:\Visual_System
+STOP_WORD = os.path.join(BASE_DIR, "app01\\views")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 RESULT = ()
 def sentiment_list(request):
@@ -21,7 +22,7 @@ def sentiment_list(request):
     page_object = Pagination(request, queryset)
 
     if request.method == "GET":
-        form = SentimentModelForm()
+        form = AnalysisModelForm()
 
         context = {
             "form": form,
@@ -32,7 +33,7 @@ def sentiment_list(request):
 
         return render(request, "sentiment_list.html", context)
 
-    form = SentimentModelForm(data=request.POST, files=request.FILES)
+    form = AnalysisModelForm(data=request.POST, files=request.FILES)
     if form.is_valid():
         form.save()
         return redirect("/sentiment/list/")
@@ -162,6 +163,17 @@ def chart_three(request):
             "x_axis": x_axis,
             "text": RESULT[3][2]
         }
+    }
+
+    return JsonResponse(result)
+
+
+
+def chart_four(request):
+    data_list = RESULT[4]
+    result = {
+        "status": True,
+        "data": data_list,
     }
 
     return JsonResponse(result)

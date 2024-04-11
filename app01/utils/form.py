@@ -108,7 +108,7 @@ class UpModelForm(BootStrapModelForm):
         fields = ["img"]
 
 
-class SentimentModelForm(BootStrapModelForm):
+class AnalysisModelForm(BootStrapModelForm):
     bootstrap_exclude_fields = ['data']
     class Meta:
         model = models.CsvData
