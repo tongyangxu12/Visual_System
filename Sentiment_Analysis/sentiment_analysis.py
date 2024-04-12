@@ -81,8 +81,9 @@ def draw_WorldCloud(df, pic_name, color="black"):
     # 文本分词
     seg_list_exact = jieba.cut(new_data, cut_all=True)
     result_list = []
-
-    with open("E:\\Visual_System\\Sentiment_Analysis\\停用词库.txt", encoding="utf-8") as f:  # 可根据需要打开停用词阵，然后加上不想显示的词语
+    path = os.getcwd()
+    # 加载停用词库
+    with open(os.path.join(path, "停用词库.txt"), encoding='utf-8') as f: # 可根据需要打开停用词阵，然后加上不想显示的词语
         con = f.readlines()
         stop_words = set()
         for i in con:

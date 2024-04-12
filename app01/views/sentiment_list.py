@@ -69,7 +69,9 @@ def sentiment_analysis(request, nid):
         global RESULT
         data_path = os.path.join(MEDIA_ROOT, data_path)
 
+        print(os.getcwd())
         RESULT = analysis(data_path)
+
         print(type(RESULT[1]))
         print(type(RESULT))
         return render(request, "sentiment_analysis.html", {"img_path": img_path})

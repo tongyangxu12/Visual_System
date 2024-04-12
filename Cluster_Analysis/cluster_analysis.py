@@ -1,3 +1,5 @@
+import os
+
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
@@ -20,8 +22,9 @@ def chinese_word_cut(mytext):
     # 文本分词
     seg_list_exact = jieba.cut(new_data, cut_all=True)
     result_list = []
+    path = os.getcwd()
     # 加载停用词库
-    with open(r"E:\Visual_System\Cluster_Analysis\停用词库.txt", encoding='utf-8') as f:  # 可根据需要打开停用词库，然后加上不想显示的词语
+    with open(os.path.join(path, "停用词库.txt"), encoding='utf-8') as f:  # 可根据需要打开停用词库，然后加上不想显示的词语
         stop_words = set()
         for i in f.readlines():
             stop_words.add(i.replace("\n", ""))  # 去掉读取每一行数据的\n
@@ -87,6 +90,7 @@ def analysis(mytext, n):
 
 
 if __name__ == '__main__':
+
     data2 = pd.read_csv('JD_comment.csv')
     data2.head()
     data2['分词结果'] = data2['评论内容'].apply(chinese_word_cut)
