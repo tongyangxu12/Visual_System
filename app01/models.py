@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import pre_delete #删除文件
+from django.dispatch.dispatcher import receiver #删除文件
 
 class UserInfo(models.Model):
     """ 用户信息表 """
@@ -26,3 +27,9 @@ class CsvData(models.Model):
     admin = models.ForeignKey(verbose_name="所属用户", to="UserInfo", on_delete=models.CASCADE)
 
     data = models.FileField(verbose_name="上传的数据", max_length=128, upload_to='data/')
+
+    # 删除文件函数
+@receiver(pre_delete, sender=CsvData)  # sender=你要删除或修改文件字段所在的类**
+def csvdata_delete(instance, **kwargs):  # 函数名随意
+        print('进入文件删除方法，删的是', instance.data)  # 用于测试
+        instance.data.delete(False)  # file是保存文件或图片的字段名*

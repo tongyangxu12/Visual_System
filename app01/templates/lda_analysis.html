@@ -27,17 +27,17 @@
                 <div class="panel-heading">观察左图，请输入最合适的主题个数</div>
                 <div class="panel-body">
                     <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label>主题个数</label>
-                        <input type="text" class="form-control" placeholder="请输入主题个数" name="title">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>主题个数</label>
+                            <input type="text" class="form-control" placeholder="请输入主题个数" name="title">
 
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-success">提 交</button>
-                        <a href="/lda/list/" class="btn btn-danger" style="text-align: center">退 出</a>
-                    </div>
-                </form>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">提 交</button>
+                            <a href="/lda/list/" class="btn btn-danger" style="text-align: center">退 出</a>
+                        </div>
+                    </form>
                 </div>
 
             </div>

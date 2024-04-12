@@ -1,0 +1,86 @@
+{% extends 'father.html ' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">使用爬虫爬取指定商品编号的CSV数据集</div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>商品编号</label>
+                        <input type="text" class="form-control" placeholder="请输入商品的编号" name="title">
+
+                    </div>
+                    <div class="form-group">
+                        <label>爬取页码</label>
+                        <input type="text" class="form-control" placeholder="请输入爬取的页码" name="page">
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success" id="btnAdd">提 交</button>
+                        <a href="/order/list/" class="btn btn-danger" style="text-align: center">退 出</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class='box' style="text-align: center;">获取爬取到的数据</div>
+                </div>
+                <div class="panel-body">
+                    <a href="/spider/download" class="btn btn-primary btn">下载数据集</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="alert alert-success alert-dismissible fade in" role="alert">
+                <h4>正在爬取数据，请稍等！</h4>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+
+        $(function () {
+            bindBtnShowEvent();
+
+        })
+
+        function bindBtnShowEvent() {
+            $("#btnAdd").click(function () {
+
+
+                // 设置对话框的标题
+                $("#myModalLabel").text("新建");
+
+                // 点击新建按钮，显示对话框
+                $("#myModal").modal("show");
+
+                $.ajax({
+                url: "/spider/wait/",
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    if (res.status) {
+                        // 关闭对话框
+                        $("#myModal").modal('hide');
+
+                        // 刷新页面
+                        location.reload()
+                    }
+                }
+            })
+            });
+        }
+    </script>
+{% endblock %}

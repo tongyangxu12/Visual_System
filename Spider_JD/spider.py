@@ -1,4 +1,6 @@
 # 导入程序用到的包
+import os
+
 import requests
 import time
 import random
@@ -26,6 +28,9 @@ def get_content(page):
     }
     # 发生请求并获取json数据
     resp = requests.get(url,params=params,headers=headers).json()
+    if not resp['comments']:
+        print(f'============================第{page+1}页为空===============================')
+        return None
     # 获取评论内容并保存
     for comment in resp['comments']:
         # 将评论内容里的换行符剔除
@@ -35,6 +40,19 @@ def get_content(page):
         print(score, comment_time, content)
         csvwriter.writerow((score, comment_time, content))
     print(f'============================第{page+1}页爬取完毕===============================')
+
+# def go_spider(path, product_id, page_number=40):
+#     with open(os.path.join(path, f"JD_comment_{product_id}.csv"), 'a', encoding='utf_8_sig') as f:
+#
+#         csvwriter = csv.writer(f)
+#         csvwriter.writerow(('评分', '评论时间', '评论内容'))
+#
+#         for page in range(page_number):
+#             try:
+#                 get_content(page)
+#                 time.sleep(5 + random.random())
+#             except:
+#                 break
 
 if __name__ == '__main__':
     product_id = input('请输入商品的ID：')
@@ -50,5 +68,7 @@ if __name__ == '__main__':
                 time.sleep(5+random.random())
             except:
                 break
+    #go_spider("./comments", product_id, page_number)
     print(f'爬虫已完成！爬取到的内容请在comments目录下的 JD_comment_{product_id}.csv 查看！')
     print("hello")
+

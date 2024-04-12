@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from app01 import models
+from app01.models import csvdata_delete
 from app01.utils.form import AnalysisModelForm
 from app01.utils.pagination import Pagination
 from LDA_Analysis.lda_analysis import analysis_find_k, lda_visual
@@ -52,7 +53,13 @@ def lda_delete(request, nid):
     if not row_object:
         return render(request, 'error.html', {'msg': '数据不存在'})
 
+
     models.CsvData.objects.filter(id=nid).delete()
+    csvdata_delete(row_object)
+    # filepath = row_object.data.file.name
+    # print(filepath)
+    #
+    # os.remove(filepath)
     return redirect('/lda/list/')
 
 

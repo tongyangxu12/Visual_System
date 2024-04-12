@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from app01 import models
 from app01.utils.pagination import Pagination
 from app01.utils.form import AnalysisModelForm
+from app01.models import csvdata_delete
 from Cluster_Analysis.cluster_analysis import analysis
 
 BASE_DIR = os.getcwd()  # 获取当前文件路径 E:\Visual_System
@@ -52,6 +53,7 @@ def cluster_delete(request, nid):
         return render(request, 'error.html', {'msg': '数据不存在'})
 
     models.CsvData.objects.filter(id=nid).delete()
+    csvdata_delete(row_object)
     return redirect('/cluster/list/')
 
 
