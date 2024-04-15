@@ -1,7 +1,7 @@
 {% extends 'father.html' %}
 
 {% block title %}
-    我的信息
+    用户列表
 {% endblock title %}
 
 {% block content %}
@@ -11,7 +11,7 @@
             <!-- Default panel contents -->
             <div class="panel-heading">
                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                我的信息
+                用户列表
             </div>
 
             <!-- Table -->
@@ -26,17 +26,20 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for ob in obj %}
                     <tr>
-                        <td>{{ obj.username }}</td>
+                        <td>{{ ob.username }}</td>
                         <td>******</td>
-                        <td><a href="/user/{{ obj.id }}/reset/">重置密码</a></td>
+                        <td><a href="/user/{{ ob.id }}/reset/">重置密码</a></td>
                         <td>
-                            <img src="/media/{{ obj.img }}" style="height: 45px;width: 45px">
+                            <img src="/media/{{ ob.img }}" style="height: 45px;width: 45px">
                         </td>
                         <td>
-                            <a href="/avatar/edit/" class="btn btn-primary btn-xs">更换头像</a>
+                            <a href="/user/{{ ob.id }}/edit/" class="btn btn-primary btn-xs">编辑</a>
+                            <a href="/user/{{ ob.id }}/delete/" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

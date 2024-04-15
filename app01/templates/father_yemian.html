@@ -1,6 +1,12 @@
 {# 公共html模板， 用于 添加 或者 修改 页面， 文件上传除外#}
 
 {% extends 'father.html' %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+
 {% block content %}
 
     <div class="container">

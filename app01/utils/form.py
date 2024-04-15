@@ -40,6 +40,15 @@ class UserResetModelForm(BootStrapModelForm):
         return confirm
 
 
+class UserEditModelForm(BootStrapModelForm):
+
+    class Meta:
+        model = models.UserInfo
+        fields = ['username']
+
+
+
+
 class LoginForm(BootStrapForm):
     """登录ModelForm方法"""
     username = forms.CharField(

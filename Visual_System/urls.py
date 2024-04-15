@@ -31,6 +31,8 @@ urlpatterns = [
     # 用户管理
     path("user/list/", user.user_list),
     path('user/<int:nid>/reset/', user.user_reset),
+    path('user/<int:nid>/edit/', user.user_edit),
+    path('user/<int:nid>/delete/', user.user_delete),
 
     # 头像
     path('avatar/edit/', avatar.avatar_edit),

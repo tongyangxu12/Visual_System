@@ -6,7 +6,7 @@ import time
 import random
 import csv
 
-# 获取评论
+# 获取评论 100060287127
 def get_content(page):
     # 目标网址
     url = 'https://club.jd.com/comment/productPageComments.action'

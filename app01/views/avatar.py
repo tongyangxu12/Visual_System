@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from app01.models import UserInfo
 from app01.utils.form import UpModelForm
+
 """
 更改头像 视图函数
 """
@@ -34,7 +35,6 @@ def avatar_edit(request):
     #     'name': info['name'],
     #     'avatar': '/'+file_name,
     # }
-
 
 
 
