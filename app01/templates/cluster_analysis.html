@@ -47,6 +47,16 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="alert alert-success alert-dismissible fade in" role="alert">
+                <h4>正在处理数据，请稍等！</h4>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock content %}
 
 {% block js %}
@@ -60,7 +70,7 @@
             initTwo();
             initThree();
             initFour();
-
+            bindBtnShowEvent();
         })
 
         /*
@@ -436,6 +446,34 @@
 
                 }
             })
+
+        }
+
+        function bindBtnShowEvent() {
+
+            // 设置对话框的标题
+            $("#myModalLabel").text("新建");
+
+            console.log("open")
+            // 点击新建按钮，显示对话框
+            $("#myModal").modal("show");
+
+
+            //设置时间 5-秒 1000-毫秒 这里设置你自己想要的时间
+            setInterval(function (){
+                $.ajax({
+                url: "/cluster/wait/",
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    if (res.status) {
+                        // 关闭对话框
+                        console.log("success close")
+                        $("#myModal").modal('hide');
+                    }
+                }
+            });
+            }, 3000)
 
         }
     </script>

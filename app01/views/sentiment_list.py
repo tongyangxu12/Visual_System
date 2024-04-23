@@ -17,7 +17,7 @@ def sentiment_list(request):
 
     img_path = models.UserInfo.objects.filter(id=request.session['info'].get("id")).values("img").first()
     img_path = img_path.get("img")
-    queryset = models.CsvData.objects.all().order_by("id")
+    queryset = models.CsvData.objects.all().order_by("-id")
     page_object = Pagination(request, queryset)
 
     if request.method == "GET":

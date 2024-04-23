@@ -75,6 +75,7 @@ urlpatterns = [
     path("cluster/chart/two/", cluster_list.chart_two),
     path("cluster/chart/three/", cluster_list.chart_three),
     path("cluster/chart/four/", cluster_list.chart_four),
+    path("cluster/wait/", cluster_list.cluster_wait),
 
     # LDA分析
     path("lda/list/", lda_list.lda_list),

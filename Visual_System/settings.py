@@ -88,7 +88,7 @@ DATABASES = {
             'NAME': 'db_bishe',  # 数据库名字
             'USER': 'root',
             'PASSWORD': 'root',
-            'HOST': '127.0.0.1',  # 那台机器安装了MySQL
+            'HOST': '127.0.0.1',  # 哪台机器安装了MySQL
             'PORT': 3306,
         }
 }

@@ -1,4 +1,5 @@
 {% extends 'father.html' %}
+{% load static %}
 {% block title %}
     聚类分析
 {% endblock title %}
@@ -38,6 +39,7 @@
 
                     <div class="col-xs-12">
                         <button type="submit" class="btn btn-primary">提 交</button>
+                        <a href="/cluster/list" class="btn btn-danger btn" style="margin-left: 10px">取 消</a>
                     </div>
                 </form>
             </div>
@@ -70,7 +72,7 @@
 
                         <td>{{ obj.admin.username }}</td>
                         <td>
-                            <a href="/cluster/{{ obj.id }}/analysis" class="btn btn-primary btn-xs">分析</a>
+                            <a href="/cluster/{{ obj.id }}/analysis" class="btn btn-primary btn-xs" id="btnAdd">分析</a>
                             <a href="/cluster/{{ obj.id }}/delete" class="btn btn-danger btn-xs">删除</a>
                         </td>
                     </tr>
@@ -83,4 +85,7 @@
             {{ page_string }}
         </ul>
     </div>
+
+
+
 {% endblock content %}

@@ -27,12 +27,16 @@ def get_content(page):
         'referer': 'https://search.jd.com/'
     }
     # 发生请求并获取json数据
-    resp = requests.get(url,params=params,headers=headers).json()
+    # 调用 requests 请求之后 返回一个 response对象，该对象包含了具体的响应信息，如状态码、响应头、响应内容等
+    # response对象提供了json方法来对json格式的响应体进行反序列化
+    resp = requests.get(url,params=params,headers=headers).json()  # resp是字典
+    print(type(resp))
+    print(resp)
     if not resp['comments']:
         print(f'============================第{page+1}页为空===============================')
         return None
-    # 获取评论内容并保存
-    for comment in resp['comments']:
+    # # 获取评论内容并保存
+    for comment in resp['comments']:  #  resp['comments']是列表 comment是字典
         # 将评论内容里的换行符剔除
         content = comment['content'].replace('\n','')
         comment_time = comment['creationTime']
@@ -41,7 +45,11 @@ def get_content(page):
         csvwriter.writerow((score, comment_time, content))
     print(f'============================第{page+1}页爬取完毕===============================')
 
-# def go_spider(path, product_id, page_number=40):
+
+
+# def go_spider(path):
+#     product_id = input('请输入商品的ID：')
+#     page_number = int(input('请输入要爬取的页数：'))
 #     with open(os.path.join(path, f"JD_comment_{product_id}.csv"), 'a', encoding='utf_8_sig') as f:
 #
 #         csvwriter = csv.writer(f)
@@ -53,6 +61,8 @@ def get_content(page):
 #                 time.sleep(5 + random.random())
 #             except:
 #                 break
+
+
 
 if __name__ == '__main__':
     product_id = input('请输入商品的ID：')

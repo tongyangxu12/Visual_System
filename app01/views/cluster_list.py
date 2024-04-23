@@ -14,10 +14,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CSV_PATH = ""
 
 
+FLAG1 = 0
+FLAG2 = 0
+FLAG3 = 0
+FLAG4 = 0
+
+
+
 def cluster_list(request):
     img_path = models.UserInfo.objects.filter(id=request.session['info'].get("id")).values("img").first()
     img_path = img_path.get("img")
-    queryset = models.CsvData.objects.all().order_by("id")
+    queryset = models.CsvData.objects.all().order_by("-id")
     page_object = Pagination(request, queryset)
 
     if request.method == "GET":
@@ -67,6 +74,7 @@ def cluster_analysis(request, nid):
         global CSV_PATH
         CSV_PATH = os.path.join(MEDIA_ROOT, data_path)
 
+
         # RESULT = analysis(data_path)
         # print(type(RESULT[1]))
         # print(type(RESULT))
@@ -77,42 +85,64 @@ def cluster_analysis(request, nid):
 
 
 def chart_one(request):
-
+    global FLAG1
+    FLAG1 = 0
     data = analysis(CSV_PATH, 2)
     result = {
         "status": True,
         "data": data
 
     }
+
+    FLAG1 = 1
     return JsonResponse(result)
 
 
 
 def chart_two(request):
+    global FLAG2
+    FLAG2 = 0
     data = analysis(CSV_PATH, 3)
     result = {
         "status": True,
         "data": data
 
     }
+    FLAG2 = 1
     return JsonResponse(result)
 
 
 def chart_three(request):
+    global FLAG3
+    FLAG3 = 0
     data = analysis(CSV_PATH, 4)
     result = {
         "status": True,
         "data": data
 
     }
+    FLAG3 = 1
     return JsonResponse(result)
 
 
 def chart_four(request):
+    global FLAG4
+    FLAG4 = 0
     data = analysis(CSV_PATH, 5)
     result = {
         "status": True,
         "data": data
 
     }
+    FLAG4 = 1
     return JsonResponse(result)
+
+
+def cluster_wait(request):
+    # print(FLAG1, FLAG2, FLAG3, FLAG4)
+    if not (FLAG1 and FLAG2 and FLAG3 and FLAG4):
+        print(FLAG1, FLAG2, FLAG3, FLAG4)
+        # print("False", FLAG)
+        return JsonResponse({'status': False})
+    # print(FLAG1, FLAG2, FLAG3, FLAG4)
+    return JsonResponse({'status': True})

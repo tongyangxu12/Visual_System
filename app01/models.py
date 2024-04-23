@@ -4,7 +4,7 @@ from django.dispatch.dispatcher import receiver #删除文件
 
 class UserInfo(models.Model):
     """ 用户信息表 """
-    username = models.CharField(verbose_name='用户名', max_length=32)
+    username = models.CharField(verbose_name='用户名', max_length=32, unique=True)
     password = models.CharField(verbose_name='密码', max_length=64)
     img = models.FileField(verbose_name='Logo', max_length=128, upload_to='avatar/', default="/avatar/init.jpg")
 

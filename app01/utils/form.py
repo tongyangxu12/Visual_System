@@ -100,6 +100,14 @@ class AdminModelForm(BootStrapModelForm):
         # 返回什么，此字段以后保存到数据库就是什么。
         return confirm
 
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        is_exit = models.UserInfo.objects.filter(username=username)
+        if is_exit:
+            raise ValidationError("用户名已存在")
+
+        return username
+
 
 class OrderModelForm(BootStrapModelForm):
     class Meta:
